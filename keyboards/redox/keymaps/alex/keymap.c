@@ -9,19 +9,58 @@ extern keymap_config_t keymap_config;
 #define _QWERTY 0
 #define _SYMB 1
 #define _NAV 2
-#define _ADJUST 3
+#define _UMLAUTS 3
+#define _ADJUST 4
 
 enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
-  SYMB,
-  NAV,
-  ADJUST,
+  DUMMY_CUST = SAFE_RANGE,
+  A_UML,
+  O_UML,
+  U_UML,
+  S_UML
 };
+
+#define MODS_CTRL_MASK  (MOD_BIT(KC_LCTL)|MOD_BIT(KC_RCTRL))
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch(keycode) {
+
+    case A_UML: {
+
+      break;
+    }
+    case O_UML: {
+
+      break;
+    }
+    case U_UML: {
+
+      break;
+    }
+    case S_UML: {
+
+      break;
+    }
+  }
+  return true;
+};
+
 
 // Fillers to make layering more clear
 #define KC_ KC_TRNS
 #define _______ KC_TRNS
 #define XXXXXXX KC_NO
+
+// some helper defininitions to make the assignment more readable
+
+//alt when hold, otherwise the asterisk from numpad
+#define ALT_AST LALT_T(KC_PAST)
+//ctrl when pressed, slash otherwise
+#define CTRL_SL LCTL_T(KC_PSLS)
+
+//brackets when pressed shortly, otherwise ctrl
+#define RBRCK_CTRL RCTL_T(KC_RBRC)
+#define LBRCK_CTRL LCTL_T(KC_LBRACKET)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -33,27 +72,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------|            |------+------+------+------+------+------+------|
  * | Esc  |   A  |   S  |   D  |   F  |   G  | PgUp |            | End  |   H  |   J  |   K  |   L  |   ;  |   '  |
  * |------+------+------+------+------+------+------|            |------+------+------+------+------+------+------|
- * | Shift|   Z  |   X  |   C  |   V  |   B  | PgDn |            | Home |   N  |   M  |   ,  |   .  |   \  |Shift |
+ * |Shift(|   Z  |   X  |   C  |   V  |   B  | PgDn |            | Home |   N  |   M  |   ,  |   .  |   \  |Shift)|
  * |------+------+------+------+------+------+------|            |------+------+------+------+------+------+------|
  * |  Gui |   +  |   -  |*(Alt)|/(Ctr)|Bcksp | Del  |            |Enter |Space |  Alt | Left | Down |  Up  | Right|
  * `------------------------------------------------'            `------------------------------------------------'
  */
 
-//alt when hold, otherwise the asterisk from numpad
-#define ALT_AST LALT_T(KC_PAST)
-#define CTRL_SL LCTL_T(KC_PSLS)
-
   [_QWERTY] = LAYOUT(
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
      LT(_NAV, KC_GRV),  KC_1,   KC_2,       KC_3,       KC_4,   KC_5,   MO(_SYMB),                 MO(_SYMB),           KC_6,   KC_7,   KC_8,   KC_9,   KC_0,       LT(_NAV, KC_MINS),
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
-     KC_TAB,            KC_Q,   KC_W,       KC_E,       KC_R,   KC_T,   KC_LBRACKET,               KC_RBRC,             KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,       KC_EQL,
+     KC_TAB,            KC_Q,   KC_W,       KC_E,       KC_R,   KC_T,   LBRCK_CTRL,                RBRCK_CTRL,          KC_Y,   KC_U,   KC_I,   KC_O,   KC_P,       KC_EQL,
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
      KC_ESC,            KC_A,   KC_S,       KC_D,       KC_F,   KC_G,   LT(_ADJUST, KC_PGUP),      LT(_ADJUST, KC_END), KC_H,   KC_J,   KC_K,   KC_L,   KC_SCLN,    KC_QUOT,
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
-     KC_LSFT,           KC_Z,   KC_X,       KC_C,       KC_V,   KC_B,   KC_PGDN,                   KC_HOME,             KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLASH,   KC_RSFT,
+     KC_LSPO,           KC_Z,   KC_X,       KC_C,       KC_V,   KC_B,   KC_PGDN,                   KC_HOME,             KC_N,   KC_M,   KC_COMM,KC_DOT, KC_SLASH,   KC_RSPC,
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
-     KC_LGUI,           XXXXXXX,KC_BSLASH,  ALT_AST,    CTRL_SL,KC_BSPC,KC_DEL,                    KC_ENT,              KC_SPC, KC_RALT,KC_LEFT,KC_DOWN,KC_UP,      KC_RGHT
+     KC_LGUI,   MO(_UMLAUTS),KC_BSLASH,  ALT_AST,    CTRL_SL,KC_BSPC,KC_DEL,                       KC_ENT,              KC_SPC, KC_RALT,KC_LEFT,KC_DOWN,KC_UP,      KC_RGHT
   //,-----------------+--------+----------+-----------+---------+------+---------------------.   ,-------------------+-------+--------+-------+-------+---------+---------------------.
   ),
 
@@ -100,7 +135,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,     XXXXXXX, KC_MEDIA_PREV_TRACK, KC_MEDIA_NEXT_TRACK,           KC_BTN1, KC_BTN2, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
   ),
 
-  [_ADJUST] = LAYOUT(
+  [_UMLAUTS] = LAYOUT(
+    _______, _______, _______, _______, _______, _______, _______,                             _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______,                             _______, _______, U_UML  , _______, O_UML  , _______, _______,
+    _______, A_UML  , S_UML  , _______, _______, _______, _______,                             _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______,                             _______, _______, _______, _______, _______, _______, _______,
+    _______, _______, _______, _______, _______, _______, _______,                             _______, _______, _______, _______, _______, _______, _______,
+  ),
+
+
+[_ADJUST] = LAYOUT(
     XXXXXXX, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                              KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  XXXXXXX,
     XXXXXXX, RESET  , RGB_M_P, RGB_TOG, RGB_MOD, RGB_HUD, RGB_HUI,                            RGB_SAD, RGB_SAI, RGB_VAD, RGB_VAI, XXXXXXX, KC_DEL,  XXXXXXX,
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,                            _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
